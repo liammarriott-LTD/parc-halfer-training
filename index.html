@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARC — adidas Half Marathon 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #0b0b0b;
+      --surface:    #141414;
+      --border:     #222;
+      --text:       #ece8e1;
+      --muted:      #555;
+      --accent:     #ff5c00;
+      --track-col:  #f87171;
+      --track-bg:   rgba(248,113,113,0.06);
+      --solo-col:   #fbbf24;
+      --solo-bg:    rgba(251,191,36,0.06);
+      --long-col:   #4ade80;
+      --long-bg:    rgba(74,222,128,0.06);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── HEADER ─────────────────────────── */
+    .header {
+      padding: 56px 40px 44px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,92,0,.13) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .club-name {
+      font-family: 'Bebas Neue', cursive;
+      font-size: clamp(72px, 14vw, 140px);
+      line-height: .88;
+      letter-spacing: .02em;
+    }
+    .club-name .a { color: var(--accent); }
+    .club-full {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .race-info {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .06em;
+    }
+    .pill-label {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .countdown {
+      margin-top: 28px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .countdown b { color: var(--accent); font-size: 15px; }
+
+    /* ── FILTER BAR ──────────────────────── */
+    .filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      gap: 0;
+    }
+    .filter-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .filter-tabs { display: flex; }
+    .ftab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 14px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .ftab:hover { color: var(--text); }
+    .ftab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── MAIN ────────────────────────────── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── PHASE HEADER ────────────────────── */
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 44px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+    }
+    .phase-header:hover .ph-name,
+    .phase-header:hover .ph-num { opacity: .7; }
+    .ph-num {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 44px;
+      color: var(--accent);
+      opacity: .25;
+      line-height: 1;
+      transition: opacity .15s;
+    }
+    .ph-name {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 30px;
+      letter-spacing: .04em;
+      line-height: 1;
+      transition: opacity .15s;
+    }
+    .ph-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      flex: 1;
+    }
+    .ph-toggle {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .ph-arrow {
+      display: inline-block;
+      transition: transform .2s ease;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .phase-section.open .ph-arrow { transform: rotate(180deg); }
+    .phase-section.open .ph-toggle { color: var(--accent); }
+
+    /* ── PHASE WEEKS COLLAPSE ────────────── */
+    .phase-weeks { display: none; }
+    .phase-section.open .phase-weeks { display: block; }
+
+    /* ── WEEK ────────────────────────────── */
+    .week {
+      border-bottom: 1px solid var(--border);
+    }
+    .week.is-current { background: rgba(255,92,0,.03); }
+    .week-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px 6px;
+      justify-content: space-between;
+    }
+    .week-head-left { display: flex; align-items: center; gap: 10px; }
+    .wk-total {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .06em;
+      flex-shrink: 0;
+    }
+    .wk-total b { color: var(--text); }
+    .wk-num {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 20px;
+      color: var(--muted);
+      min-width: 34px;
+    }
+    .wk-num.curr { color: var(--accent); }
+    .wk-dates {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .badge-cutback { background: rgba(80,80,80,.2); color: var(--muted); border: 1px solid var(--border); }
+    .badge-peak    { background: rgba(255,92,0,.15); color: var(--accent); border: 1px solid rgba(255,92,0,.3); }
+    .badge-curr    { background: rgba(255,92,0,.12); color: var(--accent); border: 1px solid rgba(255,92,0,.3); }
+
+    /* ── SESSION ROWS ────────────────────── */
+    .sessions { padding: 4px 0 10px; }
+    .srow {
+      display: flex;
+      align-items: stretch;
+      margin: 2px 20px;
+      border-radius: 3px;
+      overflow: hidden;
+      min-height: 40px;
+    }
+    .srow.skip { opacity: .45; }
+    .sbar { width: 3px; flex-shrink: 0; }
+    .srow-track .sbar { background: var(--track-col); }
+    .srow-solo  .sbar { background: var(--solo-col); }
+    .srow-long  .sbar { background: var(--long-col); }
+    .srow-track { background: var(--track-bg); }
+    .srow-solo  { background: var(--solo-bg); }
+    .srow-long  { background: var(--long-bg); }
+
+    .sinner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex: 1;
+      padding: 8px 12px;
+      flex-wrap: wrap;
+    }
+    .stype {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      min-width: 72px;
+      flex-shrink: 0;
+    }
+    .srow-track .stype { color: var(--track-col); }
+    .srow-solo  .stype { color: var(--solo-col); }
+    .srow-long  .stype { color: var(--long-col); }
+
+    .sdetail {
+      flex: 1;
+      font-size: 13px;
+      min-width: 160px;
+      padding-right: 16px;
+    }
+
+    .spaces {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      min-width: 260px;
+      display: flex;
+      gap: 20px;
+    }
+    .pg { display: flex; flex-direction: column; gap: 1px; }
+    .pg-label { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .pg-val { font-size: 12px; color: var(--text); }
+    .pace-single { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+    .sdist {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text);
+      min-width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── RACE WEEK ───────────────────────── */
+    .race-week {
+      margin: 40px 20px 20px;
+      border: 1px solid rgba(255,92,0,.35);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .rw-head {
+      background: var(--accent);
+      padding: 14px 22px;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 26px;
+      letter-spacing: .04em;
+      color: #0b0b0b;
+    }
+    .rw-body { padding: 4px 0 8px; }
+    .rw-row {
+      display: flex;
+      gap: 20px;
+      padding: 10px 22px;
+      border-bottom: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .rw-row:last-child { border-bottom: none; }
+    .rw-day {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+    .rw-race .rw-day { color: var(--accent); }
+    .rw-race .rw-ses { color: var(--accent); font-weight: 600; }
+
+    /* ── NOTES ───────────────────────────── */
+    .notes {
+      margin: 20px 20px 60px;
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .notes-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .notes-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .notes-list li {
+      font-size: 12px;
+      color: var(--muted);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.55;
+    }
+    .notes-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ── ABOUT ───────────────────────────── */
+    .about {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .about p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .about p b { color: var(--text); font-weight: 500; }
+
+    /* ── RESPONSIVE ──────────────────────── */
+    @media (max-width: 720px) {
+      .header { padding: 40px 20px 32px; }
+      .filter-bar { padding: 0 16px; overflow-x: auto; }
+      .filter-label { display: none; }
+      .spaces { min-width: unset; flex-wrap: wrap; gap: 10px; }
+      .sdetail { min-width: 120px; }
+      .ph-meta { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HEADER -->
+<header class="header">
+  <div class="club-name">P<span class="a">A</span>RC</div>
+  <div class="club-full">Premature Acceleration Running Club</div>
+  <div class="race-info">
+    <span class="pill"><span class="pill-label">Race</span> adidas Half Marathon 2026</span>
+    <span class="pill"><span class="pill-label">Date</span> Saturday, 5 Dec 2026</span>
+    <span class="pill"><span class="pill-label">Flag-off</span> 4:30am</span>
+    <span class="pill"><span class="pill-label">Distance</span> 21.0975km</span>
+  </div>
+  <div class="countdown" id="countdown"></div>
+  <div class="about">
+    <p><b>What this is.</b> A 29-week plan built around three sessions a week: a Tuesday evening track session, an optional solo easy run mid-week, and a long group run on the weekend. Three pace groups targeting <b>1:50</b>, <b>2:00</b>, and <b>2:10</b> finish times — use the filter tabs to show your group's paces.</p>
+    <p><b>How it's structured.</b> Standard periodization: base (wks 1–8), build (wks 9–18), race-specific (wks 19–26), taper (wks 27–29). Progression comes from shorter recovery and higher intensity — not more laps. Track sessions stay at ~5km active throughout. Cutback weeks land every 3–4 weeks to let the body adapt before loading again.</p>
+    <p><b>Singapore-specific.</b> Evening heat adds ~20 sec/km to effort — run by feel, not GPS. Long runs no later than 6am, ideally 5:30am. December is cooler (NE monsoon); race conditions will be the best you train in all year. The 4:30am flag-off helps too.</p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════ FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Your group</span>
+  <div class="filter-tabs" id="filterTabs">
+    <button class="ftab active" data-group="all">All Groups</button>
+    <button class="ftab" data-group="a">A — 1:50</button>
+    <button class="ftab" data-group="b">B — 2:00</button>
+    <button class="ftab" data-group="c">C — 2:10</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ PLAN -->
+<div class="main" id="plan"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PLAN DATA — edit this section to update the plan
+// ═══════════════════════════════════════════════════════════════
+
+const RACE_DATE = new Date('2026-12-05T04:30:00+08:00');
+
+const PHASES = [
+  { id:1, name:'BASE',          range:'Weeks 1–8',   dates:'May 12 – Jul 6'  },
+  { id:2, name:'BUILD',         range:'Weeks 9–18',  dates:'Jul 7 – Sep 14'  },
+  { id:3, name:'RACE SPECIFIC', range:'Weeks 19–26', dates:'Sep 15 – Nov 9'  },
+  { id:4, name:'TAPER',         range:'Weeks 27–29', dates:'Nov 10 – Nov 30' },
+];
+
+// s(detail, paceA, paceB, paceC, dist)
+const s = (detail, a, b, c, dist) => ({ detail, a, b, c, dist });
+const SKIP = s('Skip this week', '—','—','—','—');
+
+const WEEKS = [
+  // ── PHASE 1: BASE ───────────────────────────────────────────────
+  { num:1,  dates:'May 12–18',    phase:1, tag:null,
+    track: s('12×400m, 90s rec',                         '4:35–4:45','5:00–5:10','5:25–5:35','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','6km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','10km') },
+
+  { num:2,  dates:'May 19–25',    phase:1, tag:null,
+    track: s('8×600m, 90s rec',                           '4:38–4:48','5:03–5:13','5:28–5:38','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','6km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','11km') },
+
+  { num:3,  dates:'May 26–Jun 1', phase:1, tag:null,
+    track: s('5km tempo + 2km w/u & c/d',                '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','7km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','12km') },
+
+  { num:4,  dates:'Jun 2–8',      phase:1, tag:null,
+    track: s('12×400m, 75s rec  ↓ rest vs wk 1',         '4:35–4:45','5:00–5:10','5:25–5:35','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','7km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','12km') },
+
+  { num:5,  dates:'Jun 9–15',     phase:1, tag:null,
+    track: s('5×1km, 90s rec',                           '4:40–4:50','5:05–5:15','5:30–5:40','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','7km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','13km') },
+
+  { num:6,  dates:'Jun 16–22',    phase:1, tag:null,
+    track: s('5km tempo + 2km w/u & c/d',                '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','7km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','14km') },
+
+  { num:7,  dates:'Jun 23–29',    phase:1, tag:null,
+    track: s('6×800m, 90s rec',                          '4:40–4:50','5:05–5:15','5:30–5:40','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','14km') },
+
+  { num:8,  dates:'Jun 30–Jul 6', phase:1, tag:'cutback',
+    track: s('6×400m, easy effort',                      '4:55','5:25','5:50','2.4km'),
+    solo:  SKIP,
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','10km') },
+
+  // ── PHASE 2: BUILD ──────────────────────────────────────────────
+  { num:9,  dates:'Jul 7–13',     phase:2, tag:null,
+    track: s('5×1km, 75s rec  ↓ rest vs wk 5',           '4:40–4:50','5:05–5:15','5:30–5:40','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','14km') },
+
+  { num:10, dates:'Jul 14–20',    phase:2, tag:null,
+    track: s('6×800m, 75s rec  ↓ rest vs wk 7',          '4:40–4:50','5:05–5:15','5:30–5:40','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','15km') },
+
+  { num:11, dates:'Jul 21–27',    phase:2, tag:null,
+    track: s('5km tempo + 2km w/u & c/d',                '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','15km') },
+
+  { num:12, dates:'Jul 28–Aug 3', phase:2, tag:null,
+    track: s('12×400m, 60s rec  shortest rest yet',       '4:35–4:45','5:00–5:10','5:25–5:35','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','16km') },
+
+  { num:13, dates:'Aug 4–10',     phase:2, tag:null,
+    track: s('5×1km, 60s rec  shortest rest yet',         '4:40–4:50','5:05–5:15','5:30–5:40','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','16km') },
+
+  { num:14, dates:'Aug 11–17',    phase:2, tag:'cutback',
+    track: s('4×400m at race pace',                       '5:13','5:41','6:10','1.6km'),
+    solo:  SKIP,
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','11km') },
+
+  { num:15, dates:'Aug 18–24',    phase:2, tag:null,
+    track: s('6×800m, 60s rec',                          '4:40–4:50','5:05–5:15','5:30–5:40','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','17km') },
+
+  { num:16, dates:'Aug 25–31',    phase:2, tag:null,
+    track: s('5km tempo + 2km w/u & c/d',                '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','17km') },
+
+  { num:17, dates:'Sep 1–7',      phase:2, tag:null,
+    track: s('5×1km at race pace, 90s rec',               '5:13','5:41','6:10','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','18km') },
+
+  { num:18, dates:'Sep 8–14',     phase:2, tag:'cutback',
+    track: s('6×400m, easy effort',                       '4:55','5:25','5:50','2.4km'),
+    solo:  SKIP,
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','12km') },
+
+  // ── PHASE 3: RACE SPECIFIC ──────────────────────────────────────
+  { num:19, dates:'Sep 15–21',    phase:3, tag:null,
+    track: s('5×1km at race pace, 75s rec',               '5:13','5:41','6:10','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','18km') },
+
+  { num:20, dates:'Sep 22–28',    phase:3, tag:null,
+    track: s('5km tempo, strong effort + 2km w/u & c/d',  '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','19km') },
+
+  { num:21, dates:'Sep 29–Oct 5', phase:3, tag:null,
+    track: s('6×800m at race pace, 75s rec',              '5:13','5:41','6:10','4.8km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','19km') },
+
+  { num:22, dates:'Oct 6–12',     phase:3, tag:'peak',
+    track: s('5×1km at race pace, 60s rec  sharpest session', '5:13','5:41','6:10','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','9km'),
+    long:  s('Easy group run — PEAK long run',            '6:15–6:45','6:45–7:15','7:15–7:45','20km') },
+
+  { num:23, dates:'Oct 13–19',    phase:3, tag:null,
+    track: s('5km tempo, race feel + 2km w/u & c/d',      '4:50–5:00','5:20–5:30','5:45–5:55','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','18km') },
+
+  { num:24, dates:'Oct 20–26',    phase:3, tag:'cutback',
+    track: s('4×400m easy effort',                        '5:20','5:50','6:20','1.6km'),
+    solo:  SKIP,
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','13km') },
+
+  { num:25, dates:'Oct 27–Nov 2', phase:3, tag:null,
+    track: s('5×1km at race pace, 75s rec',               '5:13','5:41','6:10','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','18km') },
+
+  { num:26, dates:'Nov 3–9',      phase:3, tag:null,
+    track: s('5km progression — 2km easy → 2km tempo → 1km race pace', 'mixed','mixed','mixed','5km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','8km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','16km') },
+
+  // ── PHASE 4: TAPER ──────────────────────────────────────────────
+  { num:27, dates:'Nov 10–16',    phase:4, tag:null,
+    track: s('8×400m sharp, 75s rec  volume drops here', '4:35–4:45','5:00–5:10','5:25–5:35','3.2km'),
+    solo:  s('Easy morning run',                          '6:00–6:30','6:30–7:00','7:00–7:30','7km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','14km') },
+
+  { num:28, dates:'Nov 17–23',    phase:4, tag:null,
+    track: s('3×1km at race pace, 90s rec',               '5:13','5:41','6:10','3km'),
+    solo:  s('Easy shakeout',                             '6:00–6:30','6:30–7:00','7:00–7:30','5km'),
+    long:  s('Easy group run',                            '6:15–6:45','6:45–7:15','7:15–7:45','11km') },
+
+  { num:29, dates:'Nov 24–30',    phase:4, tag:null,
+    track: s('5×400m at race pace — feel sharp, stop',    '5:13','5:41','6:10','2km'),
+    solo:  s('Easy shakeout',                             '6:00–6:30','6:30–7:00','7:00–7:30','4km'),
+    long:  s('Easy group run — done by Wednesday',        '6:15–6:45','6:45–7:15','7:15–7:45','8km') },
+];
+
+const RACE_WEEK = [
+  { day:'Mon / Tue', ses:'One easy 4–5km — nothing more', race:false },
+  { day:'Wed',       ses:'Rest',                           race:false },
+  { day:'Thu',       ses:'3km easy + 4× 30 sec strides',  race:false },
+  { day:'Fri',       ses:'Rest — kit ready, multiple alarms set', race:false },
+  { day:'Sat 5 Dec — 4:30am', ses:'Race day. Go.',         race:true  },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// END OF PLAN DATA
+// ═══════════════════════════════════════════════════════════════
+
+let group = 'all';
+
+// Countdown
+function tick() {
+  const diff = RACE_DATE - new Date();
+  if (diff <= 0) { document.getElementById('countdown').innerHTML = '<b>Race day. Go.</b>'; return; }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  document.getElementById('countdown').innerHTML = `<b>${d}</b> days <b>${h}</b> hrs to race day`;
+}
+tick(); setInterval(tick, 60000);
+
+// Weekly total distance
+function parseKm(str) {
+  if (!str || str === '—') return 0;
+  return parseFloat(str) || 0;
+}
+function weekTotal(w) {
+  const total = parseKm(w.track.dist) + parseKm(w.solo.dist) + parseKm(w.long.dist);
+  return total > 0 ? total.toFixed(1).replace(/\.0$/, '') + 'km' : '—';
+}
+
+// Which week are we in?
+const W1 = new Date('2026-05-12');
+function currentWeekNum() {
+  const days = Math.floor((new Date() - W1) / 86400000);
+  if (days < 0 || days >= 29 * 7) return -1;
+  return Math.floor(days / 7) + 1;
+}
+
+function paceHtml(session) {
+  const isSkip = session.a === '—';
+  if (isSkip) return '';
+  if (group === 'all') {
+    return `<div class="spaces">
+      <div class="pg"><span class="pg-label">A · 1:50</span><span class="pg-val">${session.a}/km</span></div>
+      <div class="pg"><span class="pg-label">B · 2:00</span><span class="pg-val">${session.b}/km</span></div>
+      <div class="pg"><span class="pg-label">C · 2:10</span><span class="pg-val">${session.c}/km</span></div>
+    </div>`;
+  }
+  const val = { a: session.a, b: session.b, c: session.c }[group];
+  return `<span class="pace-single">${val}/km</span>`;
+}
+
+function sessionRow(type, label, session) {
+  const isSkip = session.a === '—';
+  return `<div class="srow srow-${type}${isSkip ? ' skip' : ''}">
+    <div class="sbar"></div>
+    <div class="sinner">
+      <span class="stype">${label}</span>
+      <span class="sdetail">${session.detail}</span>
+      ${paceHtml(session)}
+      <span class="sdist">${session.dist}</span>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const curr = currentWeekNum();
+  let html = '';
+
+  // Group weeks by phase
+  const byPhase = {};
+  WEEKS.forEach(w => {
+    if (!byPhase[w.phase]) byPhase[w.phase] = [];
+    byPhase[w.phase].push(w);
+  });
+
+  PHASES.forEach(p => {
+    const weeks = byPhase[p.id] || [];
+    const isCurrentPhase = weeks.some(w => w.num === curr);
+    const openClass = isCurrentPhase ? ' open' : '';
+
+    html += `<div class="phase-section${openClass}" data-phase="${p.id}">
+      <div class="phase-header" onclick="togglePhase(${p.id})">
+        <span class="ph-num">${String(p.id).padStart(2,'0')}</span>
+        <span class="ph-name">${p.name}</span>
+        <span class="ph-meta">${p.dates} &nbsp;·&nbsp; ${p.range}</span>
+        <span class="ph-toggle">
+          ${isCurrentPhase ? 'open' : 'expand'}
+          <span class="ph-arrow">▾</span>
+        </span>
+      </div>
+      <div class="phase-weeks">`;
+
+    weeks.forEach(w => {
+      const isCurr = w.num === curr;
+      const badge = w.tag === 'cutback' ? '<span class="badge badge-cutback">Cutback</span>'
+                  : w.tag === 'peak'    ? '<span class="badge badge-peak">Peak Week</span>'
+                  : isCurr             ? '<span class="badge badge-curr">This Week</span>'
+                  : '';
+
+      html += `<div class="week${isCurr ? ' is-current' : ''}">
+        <div class="week-head">
+          <div class="week-head-left">
+            <span class="wk-num${isCurr ? ' curr' : ''}">W${w.num}</span>
+            <span class="wk-dates">${w.dates}</span>
+            ${badge}
+          </div>
+          <span class="wk-total">total <b>${weekTotal(w)}</b></span>
+        </div>
+        <div class="sessions">
+          ${sessionRow('track', '🔴 Track', w.track)}
+          ${sessionRow('solo',  '🟡 Solo',  w.solo)}
+          ${sessionRow('long',  '🟢 Long',  w.long)}
+        </div>
+      </div>`;
+    });
+
+    html += `</div></div>`; // close phase-weeks + phase-section
+  });
+
+  // Race week
+  html += `<div class="race-week">
+    <div class="rw-head">Race Week — Dec 1–5</div>
+    <div class="rw-body">
+      ${RACE_WEEK.map(r => `
+        <div class="rw-row${r.race ? ' rw-race' : ''}">
+          <span class="rw-day">${r.day}</span>
+          <span class="rw-ses">${r.ses}</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  // Notes
+  html += `<div class="notes">
+    <div class="notes-title">Session notes</div>
+    <ul class="notes-list">
+      <li>Solo is the skippable session — never sacrifice Track or Long</li>
+      <li>Evening track sessions: Singapore heat adds ~20s/km to effort. Run by feel, not GPS</li>
+      <li>Long runs: no later than 6:00am. Ideally 5:30am to beat the heat</li>
+      <li>15km+ long runs: take a gel at the 45–50 min mark. Don't wait until you're thirsty</li>
+      <li>Dec is cooler (NE monsoon) — race conditions will be the best you've trained in all year</li>
+      <li>Flag-off is 4:30am — set multiple alarms the night before</li>
+    </ul>
+  </div>`;
+
+  document.getElementById('plan').innerHTML = html;
+}
+
+// Phase toggle
+function togglePhase(id) {
+  const section = document.querySelector(`[data-phase="${id}"]`);
+  const isOpen = section.classList.contains('open');
+  section.classList.toggle('open');
+  const toggle = section.querySelector('.ph-toggle');
+  toggle.innerHTML = `${isOpen ? 'expand' : 'open'} <span class="ph-arrow">▾</span>`;
+}
+
+// Filter tabs
+document.getElementById('filterTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.ftab');
+  if (!tab) return;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  group = tab.dataset.group;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
